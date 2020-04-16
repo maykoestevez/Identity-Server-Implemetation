@@ -1,0 +1,12 @@
+Steps
+
+ Add Package dotnet add package IdentityServer4
+
+ Setup Startup file see Startup file
+
+ Generate pfx with openssl optional you can use the development
+
+ openssl req -newkey rsa:2048 -nodes -keyout idp.key -x509 -days 365 -out idp.cer
+ openssl pkcs12 -export -in idp.cer -inkey idp.key -out idp.pfx
+ use in configure services method AddSigningCredential(new X509Certificate2(@"pfx path","password"))
+
