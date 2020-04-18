@@ -14,7 +14,7 @@ namespace IdentityFromScratch
             return new[] {
              new Client{
                 ClientId="api",
-                ClientSecrets= new []{new Secret("secret".Sha256())},
+                ClientSecrets= new []{new Secret("o90IbCACXKUkunXoa18cODcLKnQTbjOo5ihEw9j58+8=")},
                 AllowedGrantTypes= new [] {GrantType.ResourceOwnerPassword},
                 AllowedScopes= new [] {"api"}
              }

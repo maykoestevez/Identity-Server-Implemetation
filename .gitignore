@@ -5,6 +5,9 @@ project.lock.json
 *.pyc
 nupkg/
 
+#sqlitedb
+.db
+
 # Visual Studio Code
 .vscode
 
@@ -36,3 +39,4 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+IdentityFromScratch/identityDb

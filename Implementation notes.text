@@ -10,3 +10,5 @@ Steps
  openssl pkcs12 -export -in idp.cer -inkey idp.key -out idp.pfx
  use in configure services method AddSigningCredential(new X509Certificate2(@"pfx path","password"))
 
+Configuring persising configuratio
+dotnet add package IdentityServer4.EntityFramework --version 3.1.2
