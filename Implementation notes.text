@@ -9,6 +9,23 @@ Steps
  openssl req -newkey rsa:2048 -nodes -keyout idp.key -x509 -days 365 -out idp.cer
  openssl pkcs12 -export -in idp.cer -inkey idp.key -out idp.pfx
  use in configure services method AddSigningCredential(new X509Certificate2(@"pfx path","password"))
+ 
+ Testing Identity Server 
+ 
+ Getting token with grant type password
+ 
+ Copy from post man
+ curl -X POST \
+  http://localhost:5000/connect/token \
+  -H 'Content-Type: application/json' \
+  -H 'Postman-Token: adcda5ba-79f8-4d4a-9c66-0917d0abc6cd' \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
+  -F client_id=api \
+  -F client_secret=secret \
+  -F grant_type=password \
+  -F username=mestevez@gmail.com \
+  -F password=password
 
 Configuring persising configuratio
 dotnet add package IdentityServer4.EntityFramework --version 3.1.2
