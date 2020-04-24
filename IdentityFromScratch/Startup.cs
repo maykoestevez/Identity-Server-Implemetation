@@ -31,19 +31,11 @@ namespace IdentityFromScratch
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            // Adding service for Identity from in memory configuration
-            //services.AddIdentityServer()
-            //         .AddDeveloperSigningCredential() // Provide a way to sign the token to make it unique
-            //        .AddInMemoryApiResources(InMemoryConfiguration.ApiResources())
-            //        .AddInMemoryClients(InMemoryConfiguration.GetClients())
-            //        .AddTestUsers(InMemoryConfiguration.TestUsers().ToList());
-
-            //Persiting IDP configuration
-
             const string connectionString = @"Data Source=identityDb;";
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             services.AddIdentityServer()
+
                 .AddConfigurationStore(options =>
                 {
                     options.ConfigureDbContext = builder =>
@@ -60,9 +52,11 @@ namespace IdentityFromScratch
 
             app.UseDeveloperExceptionPage();
 
-            //adding Identity server middleware :second step
+            app.UseStaticFiles();
+            app.UseHttpsRedirection();
             app.UseIdentityServer();
-
+            app.UseAuthorization();
+ 
         }
 
         private void InitializeDatabase(IApplicationBuilder app)
@@ -71,7 +65,7 @@ namespace IdentityFromScratch
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
                 context.Database.EnsureDeleted();
-                context.Database.Migrate();
+                context.Database.EnsureCreated();
 
                 var clients = _configuration.GetSection("IdentityServer:Clients").Get<IEnumerable<Client>>();
                 var apiResources = _configuration.GetSection("IdentityServer:ApiResources").Get<IEnumerable<ApiResource>>();
