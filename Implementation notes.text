@@ -40,3 +40,37 @@ After installing the template need to:
 To use WindowsPrincipal 
 dotnet add package System.Security.Principal.Windows --version 4.7.0
 Also Update IndetityServer Package to the last version in preview
+
+
+--==================
+
+ADDING Identity
+dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore 
+dotnet add package IdentityServer4.AspNetIdentity --version 3.1.3
+Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.3" />
+Microsoft.AspNetCore.Identity.UI" Version="3.1.3"
+Microsoft.EntityFrameworkCore.Design" Version="3.1.3
+
+Startup file configuration
+Adding identity base configuration
+    services.AddIdentity<IdentityUser, IdentityRole>()
+                    .AddEntityFrameworkStores<ApplicationDbContext>()
+                    .AddDefaultTokenProviders();
+
+Enable razor pages middleware 
+
+
+Generate Identity UI 
+ dotnet aspnet-codegenerator identity -dc IdentityFromScratch.Data.ApplicationDbContext --files "Account.Register;Account.Login;Account.Logout
+
+Setup Identity provider to point to the Identity UI generated
+    services.AddIdentityServer(opt =>
+    {
+                opt.UserInteraction.LoginUrl = "/Identity/Account/Login";
+                opt.UserInteraction.LogoutUrl = "/Identity/Account/Logout";
+    })
+
+ 
+
+
+

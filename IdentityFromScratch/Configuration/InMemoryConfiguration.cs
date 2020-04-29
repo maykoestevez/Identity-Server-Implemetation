@@ -9,8 +9,8 @@ namespace IdentityFromScratch
     public class InMemoryConfiguration
     {
 
-          public static IEnumerable<IdentityResource> IdentityResources() =>
-              new List<IdentityResource>() { new IdentityResources.OpenId(),new IdentityResources.Profile() };
+        public static IEnumerable<IdentityResource> IdentityResources() =>
+            new List<IdentityResource>() { new IdentityResources.OpenId(), new IdentityResources.Profile() };
 
 
         public static IEnumerable<ApiResource> ApiResources() =>
@@ -46,7 +46,7 @@ namespace IdentityFromScratch
                     new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
                     new Claim(JwtClaimTypes.Address, @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }", IdentityServer4.IdentityServerConstants.ClaimValueTypes.Json)
                 }
-                
+
                   }
               };
         }

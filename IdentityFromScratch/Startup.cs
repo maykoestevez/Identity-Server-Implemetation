@@ -5,11 +5,13 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using IdentityFromScratch.Data;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,18 +33,45 @@ namespace IdentityFromScratch
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            const string connectionString = @"Data Source=identityDb;";
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            const string connectionString = @"Data Source=identity;";
 
-            services.AddIdentityServer()
+            services.AddControllersWithViews();
+            services.AddRazorPages();
 
-                .AddConfigurationStore(options =>
-                {
-                    options.ConfigureDbContext = builder =>
-                        builder.UseSqlite(connectionString,
-                            sql => sql.MigrationsAssembly(migrationsAssembly));
-                }).AddDeveloperSigningCredential() // Provide a way to sign the token
-                  .AddTestUsers(InMemoryConfiguration.TestUsers().ToList());
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString));
+
+            // Identity Configuration
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                    .AddEntityFrameworkStores<ApplicationDbContext>()
+                    .AddDefaultTokenProviders();
+
+
+            services.AddIdentityServer(opt =>
+            {
+                opt.UserInteraction.LoginUrl = "/Identity/Account/Login";
+                opt.UserInteraction.LogoutUrl = "/Identity/Account/Logout";
+            })
+
+                    .AddConfigurationStore(options =>
+                    {
+                        options.ConfigureDbContext =
+                           builder => builder.UseSqlite(connectionString);
+
+                    }).AddDeveloperSigningCredential()
+                      .AddAspNetIdentity<IdentityUser>();
+            //.AddTestUsers(InMemoryConfiguration.TestUsers().ToList())
+
+           services.AddCors(options =>
+           {
+               options.AddPolicy("AllowAllOrigins",
+               builder =>
+               {
+                   builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+               });
+           });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,10 +82,17 @@ namespace IdentityFromScratch
             app.UseDeveloperExceptionPage();
 
             app.UseStaticFiles();
+            app.UseRouting();
             app.UseHttpsRedirection();
-            app.UseIdentityServer();
+            app.UseCors("AllowAllOrigins");
+            app.UseIdentityServer();// Identity Server add authentication middleware
             app.UseAuthorization();
- 
+            app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapRazorPages();
+            endpoints.MapDefaultControllerRoute();
+        });
+
         }
 
         private void InitializeDatabase(IApplicationBuilder app)
