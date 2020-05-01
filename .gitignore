@@ -40,3 +40,6 @@ msbuild.wrn
 # Visual Studio 2015
 .vs/
 IdentityFromScratch/identityDb
+IdentityFromScratch/identity
+IdentityFromScratch/identity
+IdentityFromScratch/identityServer
